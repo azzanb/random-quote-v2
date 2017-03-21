@@ -1,7 +1,5 @@
 // event listener to respond to "Show another quote" button clicks
 // when user clicks anywhere on the button, the "printQuote" function is called
-var b = document.querySelector("body");
-document.getElementById('loadQuote').addEventListener("click", printQuote, false);
 
 var quotes = [
 	{
@@ -54,25 +52,13 @@ var quotes = [
 	}
 ];
 
+var usedQuotes = [];
 
 
 function getRandomQuote(){
-	for(var i = 0; i < quotes.length; i += 1){
-	//I commented out the for loop to see what would happen, and line 90 still had an error
-		var num = Math.floor(Math.random() * quotes.length) + 1;
-		var object = quotes[num];
-	if(quotes.indexOf(object) > -1){
-		var usedQuotes = [];
-		usedQuotes.push(object);
-		quotes.splice(object, 1);
-		if(quotes.length === 0){
-			quotes = usedQuotes.splice();
-			usedQuotes = [];
-				}
-			}
-		}
-		return object;
-	}
+	var num = Math.floor(Math.random() * quotes.length) + 1;
+	return quotes[num];
+}
 
 function color(){
 	var r = Math.floor(Math.random() * 256);
@@ -81,22 +67,31 @@ function color(){
 	return 'rgb("r + ', ' + g + ', ' + b")';
 }
 
-function background(){
-	b.style.color = color();
-}
-
 function printQuote(){
-	var chosenQuote = getRandomQuote();
-	var quoteInfo = '<p class="quote">' + chosenQuote.quote + '</p>';
-	quoteInfo += '<p class = "source">' + chosenQuote.source;
-	quoteInfo += '<span class = "citation">' + chosenQuote.author + ', ' + chosenQuote.source + ', ' + chosenQuote.category + ', ' + chosenQuote.genre + '</span>';
-	quoteInfo += '<span class = "year">' + chosenQuote.year + '</span>';
+	//store returned object of getRandomObject function in a variable
+	var chosenQuote = getRandomQuote(); //this is the index number of the array quotes
+	var quoteDisplay = quotes[chosenQuote];
+
+	//create object string
+	var quoteInfo = '<p class="quote">' + quoteDisplay.quote + '</p>';
+	quoteInfo += '<p class = "source">' + quoteDisplay.source;
+	quoteInfo += '<span class = "citation">' + quoteDisplay.author + ', ' + ', ' + quoteDisplay.category + ', ' + quoteDisplay.genre + '</span>';
+	quoteInfo += '<span class = "year">' + quoteDisplay.year + '</span>';
 	quoteInfo += '</p>';
 	document.getElementById('quote-box').innerHTML = quoteInfo;
-	console.log(chosenQuote);
-	background();
-	return chosenQuote;
+//When the quote displays, push quote into usedQuotes
+	console.log(chosenQuote.quote);
+	document.body.style.backgroundColor = color();
+	var quoteIndex = quotes.indexOf(chosenQuote);
+		usedQuotes = quotes.splice(quoteIndex, 1);
+	if(quotes.length === 0){
+		quotes = usedQuotes.splice(usedQuotes.length);
+		usedQuotes = [];
+	}
+	return quoteInfo;
 }
 
-document.getElementById('loadQuote').addEventListener("click", printQuote, false);
+
+
 printQuote();
+document.getElementById('loadQuote').addEventListener("click", printQuote, false);
