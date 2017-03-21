@@ -1,6 +1,7 @@
 // event listener to respond to "Show another quote" button clicks
 // when user clicks anywhere on the button, the "printQuote" function is called
-//document.getElementById('loadQuote').addEventListener("click", printQuote, false);
+var b = document.querySelector("body");
+document.getElementById('loadQuote').addEventListener("click", printQuote, false);
 
 var quotes = [
 	{
@@ -53,15 +54,49 @@ var quotes = [
 	}
 ];
 
-var used = [];
+
 
 function getRandomQuote(){
 	for(var i = 0; i < quotes.length; i += 1){
-	Math.floor(Math.random() * quotes.length) + 1;
-		if(used.indexOf(i) === -1){
-			quotes.push(used);
-	}	else if(used.indexOf(i) === quotes.indexOf(i)){
-		quotes.slice(i);
+	//I commented out the for loop to see what would happen, and line 90 still had an error
+		var num = Math.floor(Math.random() * quotes.length) + 1;
+		var object = quotes[num];
+	if(quotes.indexOf(object) > -1){
+		var usedQuotes = [];
+		usedQuotes.push(object);
+		quotes.splice(object, 1);
+		if(quotes.length === 0){
+			quotes = usedQuotes.splice();
+			usedQuotes = [];
+				}
+			}
+		}
+		return object;
 	}
-	return quotes[i];
+
+function color(){
+	var r = Math.floor(Math.random() * 256);
+	var g = Math.floor(Math.random() * 256);
+	var b = Math.floor(Math.random() * 256);
+	return 'rgb("r + ', ' + g + ', ' + b")';
 }
+
+function background(){
+	b.style.color = color();
+}
+
+function printQuote(){
+	var chosenQuote = getRandomQuote();
+	var quoteInfo = '<p class="quote">' + chosenQuote.quote + '</p>';
+	quoteInfo += '<p class = "source">' + chosenQuote.source;
+	quoteInfo += '<span class = "citation">' + chosenQuote.author + ', ' + chosenQuote.source + ', ' + chosenQuote.category + ', ' + chosenQuote.genre + '</span>';
+	quoteInfo += '<span class = "year">' + chosenQuote.year + '</span>';
+	quoteInfo += '</p>';
+	document.getElementById('quote-box').innerHTML = quoteInfo;
+	console.log(chosenQuote);
+	background();
+	return chosenQuote;
+}
+
+document.getElementById('loadQuote').addEventListener("click", printQuote, false);
+printQuote();
