@@ -52,46 +52,65 @@ var quotes = [
 	}
 ];
 
-var usedQuotes = [];
+
+//this will store what's sliced
+var storeQuote = quotes.slice(); 
 
 
+//create function that returns a random object
 function getRandomQuote(){
-	var num = Math.floor(Math.random() * quotes.length) + 1;
+	var num = Math.floor(Math.random() * quotes.length);
 	return quotes[num];
 }
 
+//create function to create a random rgb()
 function color(){
 	var r = Math.floor(Math.random() * 256);
 	var g = Math.floor(Math.random() * 256);
 	var b = Math.floor(Math.random() * 256);
-	return 'rgb("r + ', ' + g + ', ' + b")';
+	return "rgb(" + r + ", " + g + ", " + b + ")";
 }
 
+//create printQuote() to store getRandomQuote() and return random object
 function printQuote(){
-	//store returned object of getRandomObject function in a variable
-	var chosenQuote = getRandomQuote(); //this is the index number of the array quotes
-	var quoteDisplay = quotes[chosenQuote];
+	// 1)store returned object of getRandomObject function in a variable
+	var readQuote = getRandomQuote(); 
 
-	//create object string
-	var quoteInfo = '<p class="quote">' + quoteDisplay.quote + '</p>';
-	quoteInfo += '<p class = "source">' + quoteDisplay.source;
-	quoteInfo += '<span class = "citation">' + quoteDisplay.author + ', ' + ', ' + quoteDisplay.category + ', ' + quoteDisplay.genre + '</span>';
-	quoteInfo += '<span class = "year">' + quoteDisplay.year + '</span>';
-	quoteInfo += '</p>';
-	document.getElementById('quote-box').innerHTML = quoteInfo;
-//When the quote displays, push quote into usedQuotes
-	console.log(chosenQuote.quote);
-	document.body.style.backgroundColor = color();
-	var quoteIndex = quotes.indexOf(chosenQuote);
-		usedQuotes = quotes.splice(quoteIndex, 1);
+	// 2)store the index number
+	var quoteDisplay = quotes.indexOf(readQuote); 
+	
+	// 3)remove object from quotes[], then replace quotes[] once it's empty
+	quotes.splice(quoteDisplay, 1);
 	if(quotes.length === 0){
-		quotes = usedQuotes.splice(usedQuotes.length);
-		usedQuotes = [];
+		quotes = storeQuote.slice(0);
 	}
-	return quoteInfo;
+
+	// 4)create the object string
+	var quoteInfo = '<p class="quote">' + readQuote.quote + '</p>';
+	quoteInfo += '<p class = "source">' + readQuote.source;
+	quoteInfo += '<span class = "citation">' + readQuote.author + ', ' + readQuote.category + ', ' + readQuote.genre + '</span>';
+	quoteInfo += '<span class = "year">' + readQuote.year + '</span>';
+	quoteInfo += '</p>';
+
+	// 5)manipulate string if author and year are unknown
+	if(readQuote.author === null){
+		quoteInfo += '<span class = "citation">' + 'Anonymous' + ', ' + readQuote.category + ', ' + readQuote.genre + '</span>';
+	}
+	if(readQuote.year === null){
+		quoteInfo += '<span class = "year">' + 'Year Unknown' + '</span>';
+	}
+
+	// 6)set string to be printed to screen 
+	document.getElementById('quote-box').innerHTML = quoteInfo;
+
+	// 7)manipulate the background color: set color() equal to the tagged body
+	document.body.style.backgroundColor = color();
+
+	// 8)log the quote to the conso
+	console.log(readQuote);
 }
 
-
-
-printQuote();
+//use the printQuote function to set a timer for quotes
+window.setInterval(printQuote, 3000); 
 document.getElementById('loadQuote').addEventListener("click", printQuote, false);
+printQuote();
